@@ -1,0 +1,9 @@
+org\openmrs\module\pharmacy\controller\PharmacyController.class
+org\openmrs\module\pharmacy\controller\CategoryController.class
+org\openmrs\module\pharmacy\controller\LedgerController.class
+org\openmrs\module\pharmacy\controller\DispenseController.class
+org\openmrs\module\pharmacy\controller\StoreController.class
+org\openmrs\module\pharmacy\controller\PriceController.class
+org\openmrs\module\pharmacy\controller\StockController.class
+org\openmrs\module\pharmacy\controller\BillingController.class
+org\openmrs\module\pharmacy\controller\ItemController.class

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8bad923e-7de3-40c0-a606-dd1072844cf6" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1RKDDfJ97OI3S4lmMnmtiYfEnN9" />
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../billing-ucc" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RestClientSettings">
+    <option name="REQUEST_HISTORY">
+      <list>
+        <RestClientRequest>
+          <option name="biscuits">
+            <list>
+              <Biscuit>
+                <option name="date" value="-1" />
+                <option name="domain" value="192.168.1.135" />
+                <option name="name" value="JSESSIONID" />
+                <option name="path" value="/openmrs/" />
+                <option name="value" value="BED7D804748D68CB50F9D84452C01876" />
+              </Biscuit>
+            </list>
+          </option>
+          <option name="httpMethod" value="GET" />
+          <option name="urlBase" value="https://192.168.1.135" />
+          <option name="urlPath" value="/openmrs/ws/rest/v1/pharmacy/test" />
+          <option name="headers">
+            <list>
+              <KeyValuePair>
+                <option name="key" value="Accept" />
+                <option name="value" value="*/*" />
+              </KeyValuePair>
+              <KeyValuePair>
+                <option name="key" value="Cache-Control" />
+                <option name="value" value="no-cache" />
+              </KeyValuePair>
+            </list>
+          </option>
+          <option name="parametersEnabled" value="true" />
+          <option name="textToSend" value="" />
+          <option name="filesToSend" value="" />
+        </RestClientRequest>
+        <RestClientRequest>
+          <option name="httpMethod" value="GET" />
+          <option name="urlBase" value="https://192.168.1.135" />
+          <option name="urlPath" value="/openmrs/ws/rest/v1/main/test" />
+          <option name="headers">
+            <list>
+              <KeyValuePair>
+                <option name="key" value="Accept" />
+                <option name="value" value="*/*" />
+              </KeyValuePair>
+              <KeyValuePair>
+                <option name="key" value="Cache-Control" />
+                <option name="value" value="no-cache" />
+              </KeyValuePair>
+            </list>
+          </option>
+          <option name="parametersEnabled" value="true" />
+          <option name="textToSend" value="" />
+          <option name="filesToSend" value="" />
+        </RestClientRequest>
+      </list>
+    </option>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8bad923e-7de3-40c0-a606-dd1072844cf6" name="Default Changelist" comment="" />
+      <created>1569406776635</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1569406776635</updated>
+      <workItem from="1569406784507" duration="1177000" />
+      <workItem from="1569408604951" duration="1099000" />
+      <workItem from="1569482353399" duration="2212000" />
+      <workItem from="1569571070738" duration="896000" />
+      <workItem from="1569657072098" duration="570000" />
+      <workItem from="1569663368443" duration="2246000" />
+      <workItem from="1569692401538" duration="765000" />
+      <workItem from="1569738270820" duration="1164000" />
+      <workItem from="1569832818783" duration="979000" />
+      <workItem from="1569914316596" duration="8722000" />
+      <workItem from="1570008479002" duration="2925000" />
+      <workItem from="1570089198984" duration="3365000" />
+      <workItem from="1570285594058" duration="573000" />
+      <workItem from="1570368471967" duration="582000" />
+      <workItem from="1570696031943" duration="568000" />
+      <workItem from="1570966200716" duration="459000" />
+      <workItem from="1570970446954" duration="222000" />
+      <workItem from="1571286594430" duration="585000" />
+      <workItem from="1571386327841" duration="1605000" />
+      <workItem from="1571469861174" duration="477000" />
+      <workItem from="1571472052711" duration="4620000" />
+      <workItem from="1571502636964" duration="1287000" />
+      <workItem from="1571544378458" duration="595000" />
+      <workItem from="1571562297853" duration="1789000" />
+      <workItem from="1571580350151" duration="546000" />
+      <workItem from="1571659027693" duration="561000" />
+      <workItem from="1571728560372" duration="584000" />
+      <workItem from="1571910659890" duration="1163000" />
+      <workItem from="1571999504523" duration="1190000" />
+      <workItem from="1572149775068" duration="4365000" />
+      <workItem from="1572240487396" duration="1410000" />
+      <workItem from="1572250656344" duration="2579000" />
+      <workItem from="1572415568513" duration="498000" />
+      <workItem from="1572419246798" duration="2806000" />
+      <workItem from="1572455423099" duration="855000" />
+      <workItem from="1572532340654" duration="562000" />
+      <workItem from="1572757586880" duration="579000" />
+      <workItem from="1572838639223" duration="573000" />
+      <workItem from="1572961272024" duration="597000" />
+      <workItem from="1573019876022" duration="576000" />
+      <workItem from="1573043291769" duration="587000" />
+      <workItem from="1573107978849" duration="580000" />
+      <workItem from="1573127574987" duration="588000" />
+      <workItem from="1573193946992" duration="579000" />
+      <workItem from="1573280475916" duration="588000" />
+      <workItem from="1573378071503" duration="575000" />
+      <workItem from="1573552637911" duration="1446000" />
+      <workItem from="1573557628589" duration="660000" />
+      <workItem from="1573633863448" duration="642000" />
+      <workItem from="1573642413809" duration="601000" />
+      <workItem from="1573714184611" duration="611000" />
+      <workItem from="1573721541072" duration="717000" />
+      <workItem from="1573725210296" duration="791000" />
+      <workItem from="1573797452176" duration="1178000" />
+      <workItem from="1573890531108" duration="587000" />
+      <workItem from="1573971161589" duration="630000" />
+      <workItem from="1573990091913" duration="651000" />
+      <workItem from="1574060496468" duration="733000" />
+      <workItem from="1574064294066" duration="586000" />
+      <workItem from="1574145337644" duration="609000" />
+      <workItem from="1574230621845" duration="911000" />
+      <workItem from="1574425564426" duration="582000" />
+      <workItem from="1574441403101" duration="582000" />
+      <workItem from="1574776032260" duration="829000" />
+      <workItem from="1574853804494" duration="679000" />
+      <workItem from="1575001505146" duration="2146000" />
+      <workItem from="1575033111239" duration="599000" />
+      <workItem from="1575101270104" duration="651000" />
+      <workItem from="1575107978772" duration="581000" />
+      <workItem from="1575118119254" duration="586000" />
+      <workItem from="1575140223979" duration="585000" />
+      <workItem from="1575184794935" duration="639000" />
+      <workItem from="1575206037518" duration="587000" />
+      <workItem from="1575218173158" duration="595000" />
+      <workItem from="1575272483203" duration="588000" />
+      <workItem from="1575354873068" duration="1854000" />
+      <workItem from="1575434180803" duration="1972000" />
+      <workItem from="1575446944055" duration="589000" />
+      <workItem from="1576576152806" duration="2696000" />
+      <workItem from="1576581787988" duration="622000" />
+      <workItem from="1576582589215" duration="3355000" />
+      <workItem from="1576651712477" duration="1180000" />
+      <workItem from="1576700976904" duration="574000" />
+      <workItem from="1576740851875" duration="580000" />
+      <workItem from="1576761000171" duration="580000" />
+      <workItem from="1576828755173" duration="585000" />
+      <workItem from="1576920438414" duration="2178000" />
+      <workItem from="1577000076682" duration="574000" />
+      <workItem from="1577021505184" duration="580000" />
+      <workItem from="1577084811635" duration="1230000" />
+      <workItem from="1577106933844" duration="575000" />
+      <workItem from="1577170494037" duration="1164000" />
+      <workItem from="1577184993727" duration="703000" />
+      <workItem from="1577260452894" duration="574000" />
+      <workItem from="1577351676996" duration="575000" />
+      <workItem from="1577380386841" duration="214000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+</project>

@@ -1,0 +1,1540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes-->
+
+
+    <changeSet id="pharmacy_store" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_store" />
+            </not>
+        </preConditions>
+        <comment>Creating pharmacy store table</comment>
+        <createTable tableName="ph_store">
+            <column name="store_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"  unique="true"/>
+            </column>
+
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_store_creator"
+                                 baseTableName="ph_store" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_store_changed_by"
+                                 baseTableName="ph_store" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <createIndex indexName="ind_ph_store_store_id"
+                     schemaName="openmrs"
+                     tableName="ph_store"
+                     unique="true">
+            <column name="store_id" type="int"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_store_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_store"
+                     unique="true">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <sql>
+            insert into ph_store(name,date_created,creator,uuid) values('Main store',now(),'4',uuid());
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy_store_map" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_store_map" />
+            </not>
+        </preConditions>
+        <comment>Creating pharmacy store map table</comment>
+        <createTable tableName="ph_store_map">
+            <column name="map_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column name="store_uuid" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sub_store_uuid" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_store_map_store_uuid"
+                                 baseTableName="ph_store_map" baseColumnNames="store_uuid"
+                                 referencedTableName="ph_store" referencedColumnNames="uuid" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_store_map_sub_store_uuid"
+                                 baseTableName="ph_store_map" baseColumnNames="sub_store_uuid"
+                                 referencedTableName="ph_store" referencedColumnNames="uuid" onDelete="CASCADE"/>
+
+        <createIndex indexName="ind_ph_store_map_map_id"
+                     schemaName="openmrs"
+                     tableName="ph_store_map">
+            <column name="map_id" type="int"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_store_map_store_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_store_map">
+            <column name="store_uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_store_map_sub_store_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_store_map">
+            <column name="sub_store_uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="pharmacy_item_category" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_category" />
+            </not>
+        </preConditions>
+        <comment>Creating pharmacy item categories table</comment>
+        <createTable tableName="ph_item_category">
+            <column name="category_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"  unique="true"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_category_creator"
+                                 baseTableName="ph_item_category" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_category_changed_by"
+                                 baseTableName="ph_item_category" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <createIndex
+                indexName="ind_ph_item_category_category_id"
+                schemaName="openmrs"
+                tableName="ph_item_category"
+                unique="true">
+            <column name="category_id" type="int"/>
+        </createIndex>
+        <createIndex
+                indexName="ind_ph_item_category_uuid"
+                schemaName="openmrs"
+                tableName="ph_item_category">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <sql>
+            insert into ph_item_category(name,creator,date_created,uuid) values('Drugs',4,now(),uuid())
+        </sql>
+        <sql>
+            insert into ph_item_category(name,creator,date_created,uuid) values('Non drugs',4,now(),uuid())
+        </sql>
+    </changeSet>
+
+    <changeSet id="pharmacy_item_sub_category" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_sub_category" />
+            </not>
+        </preConditions>
+        <comment>Creating pharmacy item sub-categories table</comment>
+        <createTable tableName="ph_item_sub_category">
+            <column name="sub_category_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="item_category_uuid" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_parent_uuid"
+                                 baseTableName="ph_item_sub_category" baseColumnNames="item_category_uuid"
+                                 referencedTableName="ph_item_category" referencedColumnNames="uuid" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_creator"
+                                 baseTableName="ph_item_sub_category" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_changed_by"
+                                 baseTableName="ph_item_sub_category" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <createIndex
+                indexName="ind_ph_item_sub_category_sub_category_id"
+                schemaName="openmrs"
+                tableName="ph_item_sub_category"
+                unique="true">
+            <column name="sub_category_id" type="int"/>
+        </createIndex>
+        <createIndex
+                indexName="ind_ph_item_sub_category_uuid"
+                schemaName="openmrs"
+                tableName="ph_item_sub_category">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="pharmacy_item_sub_category_attribute_type" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_sub_category_attribute_type" />
+            </not>
+        </preConditions>
+        <comment>Creating attribute types table for pharmacy item sub-categories</comment>
+        <createTable tableName="ph_item_sub_category_attribute_type">
+            <column name="attribute_type_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="sub_category_uuid" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_attribute_type_sub_category_uuid"
+                                 baseTableName="ph_item_sub_category_attribute_type" baseColumnNames="sub_category_uuid"
+                                 referencedTableName="ph_item_sub_category" referencedColumnNames="uuid" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_attribute_type_creator"
+                                 baseTableName="ph_item_sub_category_attribute_type" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_attribute_type_changed_by"
+                                 baseTableName="ph_item_sub_category_attribute_type" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <createIndex
+                indexName="ind_ph_item_sub_category_attribute_type_attribute_type_id"
+                schemaName="openmrs"
+                tableName="ph_item_sub_category_attribute_type">
+            <column name="attribute_type_id" type="int"/>
+        </createIndex>
+        <createIndex
+                indexName="ind_ph_item_sub_category_attribute_type_uuid"
+                schemaName="openmrs"
+                tableName="ph_item_sub_category_attribute_type">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="pharmacy_item" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item" />
+            </not>
+        </preConditions>
+        <comment>Creating pharmacy items table</comment>
+        <createTable tableName="ph_item">
+            <column name="item_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_uuid" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_category_uuid"
+                                 baseTableName="ph_item" baseColumnNames="category_uuid"
+                                 referencedTableName="ph_item_category" referencedColumnNames="uuid" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_creator"
+                                 baseTableName="ph_item" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_changed_by"
+                                 baseTableName="ph_item" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <createIndex
+                indexName="ind_ph_item_item_id"
+                schemaName="openmrs"
+                tableName="ph_item">
+            <column name="item_id" type="int"/>
+        </createIndex>
+        <createIndex
+                indexName="ind_ph_item_uuid"
+                schemaName="openmrs"
+                tableName="ph_item">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_drug" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_drug" />
+            </not>
+        </preConditions>
+        <comment>Creating pharmacy table that maps items to drugs in drug table.</comment>
+        <createTable tableName="ph_item_drug">
+            <column name="item_id" type="int">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="drug_id" type="int">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_drug_creator"
+                                 baseTableName="ph_item_drug" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_drug_item_id"
+                                 baseTableName="ph_item_drug" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_drug_drug_id"
+                                 baseTableName="ph_item_drug" baseColumnNames="drug_id"
+                                 referencedTableName="drug" referencedColumnNames="drug_id" onDelete="CASCADE"/>
+        <createIndex
+                indexName="ind_ph_item_drug_item_id"
+                schemaName="openmrs"
+                tableName="ph_item_drug">
+            <column name="item_id" type="int"/>
+        </createIndex>
+        <createIndex
+                indexName="ind_ph_item_drug_drug_id"
+                schemaName="openmrs"
+                tableName="ph_item_drug">
+            <column name="drug_id" type="int"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_sub_category_attribute" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_sub_category_attribute" />
+            </not>
+        </preConditions>
+        <comment>Creating pharmacy item attributes table for items under subcategories.</comment>
+        <createTable tableName="ph_item_sub_category_attribute">
+            <column name="attribute_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attribute_type_uuid" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_attribute_creator"
+                                 baseTableName="ph_item_sub_category_attribute" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_attribute_changed_by"
+                                 baseTableName="ph_item_sub_category_attribute" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_attribute_item_id"
+                                 baseTableName="ph_item_sub_category_attribute" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_sub_category_attribute_attribute_type_uuid"
+                                 baseTableName="ph_item_sub_category_attribute" baseColumnNames="attribute_type_uuid"
+                                 referencedTableName="ph_item_sub_category_attribute_type" referencedColumnNames="uuid" onDelete="CASCADE"/>
+        <createIndex
+                indexName="ind_ph_item_sub_category_attribute_attribute_id"
+                schemaName="openmrs"
+                tableName="ph_item_sub_category_attribute">
+            <column name="attribute_id" type="int"/>
+        </createIndex>
+        <createIndex
+                indexName="ind_ph_item_sub_category_attribute_uuid"
+                schemaName="openmrs"
+                tableName="ph_item_sub_category_attribute">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_price_category" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_price_category" />
+            </not>
+        </preConditions>
+        <comment>Creating price categories table for pharmacy items</comment>
+        <createTable tableName="ph_item_price_category">
+            <column name="price_category_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(58)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_price_category_creator"
+                                 baseTableName="ph_item_price_category" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_price_category_changed_by"
+                                 baseTableName="ph_item_price_category" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <createIndex indexName="ind_ph_item_price_category_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_price_category">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_price_category_name"
+                     schemaName="openmrs"
+                     tableName="ph_item_price_category">
+            <column name="name" type="varchar"/>
+        </createIndex>
+
+        <sql>
+            insert into ph_item_price_category(name,creator,date_created,uuid) values('Cash',4,now(),uuid())
+        </sql>
+        <sql>
+            insert into ph_item_price_category(name,creator,date_created,uuid) values('Insurance',4,now(),uuid())
+        </sql>
+
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_ledger_type" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_ledger_type" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record ledger type for ledger entries in pharmacy</comment>
+        <createTable tableName="ph_item_ledger_type">
+            <column name="ledger_type_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="operation" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_ledger_type_creator"
+                                 baseTableName="ph_item_ledger_type" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_ledger_type_changed_by"
+                                 baseTableName="ph_item_ledger_type" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+
+        <createIndex indexName="ind_ph_item_ledger_type_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_ledger_type">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_ledger_type_operation"
+                     schemaName="openmrs"
+                     tableName="ph_item_ledger_type">
+            <column name="operation" type="int"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_stock_on_hand" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_stock_on_hand" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record stock on hand for pharmacy items</comment>
+        <createTable tableName="ph_item_stock_on_hand">
+            <column name="entry_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="store_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_on_hand_store_id"
+                                 baseTableName="ph_item_stock_on_hand" baseColumnNames="store_id"
+                                 referencedTableName="ph_store" referencedColumnNames="store_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_on_hand_item_id"
+                                 baseTableName="ph_item_stock_on_hand" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_on_hand_price_category_id"
+                                 baseTableName="ph_item_stock_on_hand" baseColumnNames="price_category_id"
+                                 referencedTableName="ph_item_price_category" referencedColumnNames="price_category_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_on_hand_creator"
+                                 baseTableName="ph_item_stock_on_hand" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_on_hand_changed_by"
+                                 baseTableName="ph_item_stock_on_hand" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+
+        <createIndex indexName="ind_ph_item_stock_on_hand_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_stock_on_hand">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_stock_on_hand_quantity"
+                     schemaName="openmrs"
+                     tableName="ph_item_stock_on_hand">
+            <column name="quantity" type="int"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_stock_by_batch" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_stock_by_batch" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record stock on hand for pharmacy items by their respective batches.</comment>
+        <createTable tableName="ph_item_stock_by_batch">
+            <column name="entry_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="store_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="batch_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_by_batch_store_id"
+                                 baseTableName="ph_item_stock_by_batch" baseColumnNames="store_id"
+                                 referencedTableName="ph_store" referencedColumnNames="store_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_by_batch_item_id"
+                                 baseTableName="ph_item_stock_by_batch" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_by_batch_price_category_id"
+                                 baseTableName="ph_item_stock_by_batch" baseColumnNames="price_category_id"
+                                 referencedTableName="ph_item_price_category" referencedColumnNames="price_category_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_by_batch_creator"
+                                 baseTableName="ph_item_stock_by_batch" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_by_batch_changed_by"
+                                 baseTableName="ph_item_stock_by_batch" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+
+        <createIndex indexName="ind_ph_item_stock_by_batch_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_stock_by_batch">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_stock_by_batch_batch_no"
+                     schemaName="openmrs"
+                     tableName="ph_item_stock_by_batch">
+            <column name="batch_no" type="varchar"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_stock_by_batch_quantity"
+                     schemaName="openmrs"
+                     tableName="ph_item_stock_by_batch">
+            <column name="quantity" type="int"/>
+        </createIndex>
+
+        <sql endDelimiter="#" splitStatements="false">
+            create trigger after_ph_item_stock_by_batch_insert
+            after insert on ph_item_stock_by_batch
+            for each row
+            begin
+                declare rows int;
+                declare quantity_to_update int;
+                SET rows=(select count(*) from ph_item_stock_on_hand pisoh where(pisoh.store_id=NEW.store_id and pisoh.item_id=NEW.item_id and pisoh.price_category_id=NEW.price_category_id));
+                if rows=0 then
+                    insert into ph_item_stock_on_hand(store_id,item_id,price_category_id,quantity,creator,date_created,uuid) values(NEW.store_id,NEW.item_id,NEW.price_category_id,NEW.quantity,NEW.creator,now(),uuid());
+                    insert into ph_item_transaction(store_id,item_id,batch_no,quantity,transaction_type_id,price_category_id,creator,date_created,uuid) values(NEW.store_id,NEW.item_id,NEW.batch_no,NEW.quantity,'1',NEW.price_category_id,NEW.creator,NEW.date_created,uuid());
+                end if;
+                if rows &gt; 0 then
+                    SET quantity_to_update=(select sum(pisbb.quantity) from ph_item_stock_by_batch pisbb where(pisbb.store_id=NEW.store_id and pisbb.item_id=NEW.item_id and pisbb.price_category_id=NEW.price_category_id));
+                    update ph_item_stock_on_hand pisoh set pisoh.quantity=quantity_to_update,pisoh.date_changed=now(),pisoh.changed_by=NEW.changed_by where(pisoh.store_id=NEW.store_id and pisoh.item_id=NEW.item_id and pisoh.price_category_id=NEW.price_category_id);
+                    insert into ph_item_transaction(store_id,item_id,batch_no,quantity,transaction_type_id,price_category_id,creator,date_created,uuid) values(NEW.store_id,NEW.item_id,NEW.batch_no,NEW.quantity,'1',NEW.price_category_id,NEW.creator,NEW.date_created,uuid());
+                end if;
+            end;
+            #
+        </sql>
+
+        <sql endDelimiter="#" splitStatements="false">
+            create trigger after_ph_item_stock_by_batch_update
+            after update on ph_item_stock_by_batch
+            for each row
+            begin
+                declare quantity_to_update int;
+                declare quantity_current_on_hand int;
+                declare added_amount int;
+                declare reduced_amount int;
+                declare rows int;
+                SET rows=(select count(*) from ph_item_stock_on_hand pisoh where(pisoh.store_id=NEW.store_id and pisoh.item_id=NEW.item_id and pisoh.price_category_id=NEW.price_category_id));
+                SET quantity_current_on_hand=(select quantity from ph_item_stock_on_hand pisoh where(pisoh.store_id=NEW.store_id and pisoh.item_id=NEW.item_id and pisoh.price_category_id=NEW.price_category_id));
+
+                if rows=0 then
+                    insert into ph_item_stock_on_hand(store_id,item_id,price_category_id,quantity,creator,date_created,uuid) values(NEW.store_id,NEW.item_id,NEW.price_category_id,NEW.quantity,NEW.creator,now(),uuid());
+                    insert into ph_item_transaction(store_id,item_id,batch_no,quantity,transaction_type_id,price_category_id,creator,date_created,uuid) values(NEW.store_id,NEW.item_id,NEW.batch_no,NEW.quantity,'1',NEW.price_category_id,NEW.creator,NEW.date_created,uuid());
+                end if;
+                if rows &gt; 0 then
+                    if NEW.quantity &gt; OLD.quantity then
+                        SET added_amount=NEW.quantity-OLD.quantity;
+                        SET quantity_to_update=quantity_current_on_hand+added_amount;
+                        update ph_item_stock_on_hand pisoh set pisoh.quantity=quantity_to_update,pisoh.date_changed=now(),pisoh.changed_by=NEW.changed_by where(pisoh.store_id=NEW.store_id and pisoh.item_id=NEW.item_id and pisoh.price_category_id=NEW.price_category_id);
+                        insert into ph_item_transaction(store_id,item_id,batch_no,quantity,transaction_type_id,price_category_id,creator,date_created,uuid) values(NEW.store_id,NEW.item_id,NEW.batch_no,added_amount,'1',NEW.price_category_id,NEW.creator,NEW.date_created,uuid());
+                    end if;
+                    if NEW.quantity &lt; OLD.quantity then
+                        SET reduced_amount=OLD.quantity-NEW.quantity;
+                        SET quantity_to_update=quantity_current_on_hand-reduced_amount;
+                        update ph_item_stock_on_hand pisoh set pisoh.quantity=quantity_to_update,pisoh.date_changed=now(),pisoh.changed_by=NEW.changed_by where(pisoh.store_id=NEW.store_id and pisoh.item_id=NEW.item_id and pisoh.price_category_id=NEW.price_category_id);
+                        insert into ph_item_transaction(store_id,item_id,batch_no,quantity,transaction_type_id,price_category_id,creator,date_created,uuid) values(NEW.store_id,NEW.item_id,NEW.batch_no,reduced_amount,'2',NEW.price_category_id,NEW.creator,NEW.date_created,uuid());
+                    end if;
+                end if;
+            end;
+            #
+        </sql>
+
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_ledger" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_ledger" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record ledger entries for pharmacy items</comment>
+        <createTable tableName="ph_item_ledger">
+            <column name="ledger_entry_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="ledger_type" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="batch_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invoice_no" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="buying_price" type="double">
+                <constraints nullable="true"/>
+            </column>
+            <column name="quantity" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_moved" type="date">
+                <constraints nullable="false" />
+            </column>
+            <column name="expiry_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dosing_units" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remarks" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_ledger_ledger_type"
+                                 baseTableName="ph_item_ledger" baseColumnNames="ledger_type"
+                                 referencedTableName="ph_item_ledger_type" referencedColumnNames="ledger_type_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_ledger_price_category_id"
+                                 baseTableName="ph_item_ledger" baseColumnNames="price_category_id"
+                                 referencedTableName="ph_item_price_category" referencedColumnNames="price_category_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_ledger_item_id"
+                                 baseTableName="ph_item_ledger" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_package_dosing_units"
+                                 baseTableName="ph_item_ledger" baseColumnNames="dosing_units"
+                                 referencedTableName="concept" referencedColumnNames="concept_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_ledger_creator"
+                                 baseTableName="ph_item_ledger" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" onDelete="CASCADE"/>
+        <addForeignKeyConstraint constraintName="fk_ph_item_ledger_changed_by"
+                                 baseTableName="ph_item_ledger" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" onDelete="CASCADE"/>
+
+        <createIndex indexName="ind_ph_item_package_batch_no"
+                     schemaName="openmrs"
+                     tableName="ph_item_ledger">
+            <column name="batch_no" type="varchar"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_ledger_date_moved"
+                     schemaName="openmrs"
+                     tableName="ph_item_ledger">
+            <column name="date_moved" type="date"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_ledger_expiry_date"
+                     schemaName="openmrs"
+                     tableName="ph_item_ledger">
+            <column name="expiry_date" type="date"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_ledger_invoice_no"
+                     schemaName="openmrs"
+                     tableName="ph_item_ledger">
+            <column name="invoice_no" type="varchar"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_ledger_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_ledger">
+            <column name="uuid" type="char"/>
+        </createIndex>
+
+        <sql endDelimiter="#" splitStatements="false">
+            create trigger after_ph_item_ledger_insert
+            after insert on ph_item_ledger
+            for each row
+            begin
+                declare quantity_to_update double;
+                declare quantity_current double;
+                declare rows int;
+                declare ledgerType char(58);
+                SET rows=(select count(*) from ph_item_stock_by_batch pisbb where(pisbb.store_id=1 and pisbb.item_id=NEW.item_id and pisbb.batch_no=NEW.batch_no and pisbb.price_category_id=NEW.price_category_id));
+                SET ledgerType=(select pilt.operation from ph_item_ledger pil inner join ph_item_ledger_type pilt on pil.ledger_type=pilt.ledger_type_id where pil.ledger_entry_id=NEW.ledger_entry_id);
+                case
+                    when ledgerType = '+ve' then
+                        if rows &gt; 0 then
+                            update ph_item_stock_by_batch pisbb set pisbb.quantity=pisbb.quantity+NEW.quantity,pisbb.date_changed=now(),pisbb.changed_by=NEW.changed_by where(pisbb.store_id=1 and pisbb.item_id=NEW.item_id and pisbb.batch_no=NEW.batch_no and pisbb.price_category_id=NEW.price_category_id);
+                        end if;
+                        if rows=0 then
+                            insert into ph_item_stock_by_batch(store_id,item_id,batch_no,price_category_id,quantity,creator,date_created,uuid) values('1',NEW.item_id,NEW.batch_no,NEW.price_category_id,NEW.quantity,NEW.creator,now(),uuid());
+                        end if;
+                    when ledgerType = '-ve' then
+                        if rows &gt; 0 then
+                            SET quantity_current=(select pisbb.quantity from ph_item_stock_by_batch pisbb where(pisbb.store_id=1 and pisbb.item_id=NEW.item_id and pisbb.batch_no=NEW.batch_no and pisbb.price_category_id=NEW.price_category_id));
+                            SET quantity_to_update=quantity_current-NEW.quantity;
+                            if (quantity_to_update &lt; 0) then
+                                SET quantity_to_update=0;
+                            end if;
+                            update ph_item_stock_by_batch pisbb set pisbb.quantity=quantity_to_update,pisbb.date_changed=now(),pisbb.changed_by=NEW.changed_by where(pisbb.store_id='1' and pisbb.item_id=NEW.item_id and pisbb.batch_no=NEW.batch_no and pisbb.price_category_id=NEW.price_category_id);
+                        end if;
+                end case;
+            end;
+            #
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_transaction_type" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_transaction_type" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record types for transactions in pharmacy</comment>
+        <createTable tableName="ph_item_transaction_type">
+            <column name="transaction_type_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="char(58)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_type_creator"
+                                 baseTableName="ph_item_transaction_type" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_type_changed_by"
+                                 baseTableName="ph_item_transaction_type" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <createIndex indexName="ind_ph_item_transaction_type_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_transaction_type">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_transaction_type_name"
+                     schemaName="openmrs"
+                     tableName="ph_item_transaction_type">
+            <column name="name" type="char"/>
+        </createIndex>
+
+        <sql>
+            insert into ph_item_transaction_type(name,creator,date_created,uuid) values('Transaction In',4,now(),uuid())
+        </sql>
+        <sql>
+            insert into ph_item_transaction_type(name,creator,date_created,uuid) values('Transaction Out',4,now(),uuid())
+        </sql>
+
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_transaction" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_transaction" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record items transactions in pharmacy</comment>
+        <createTable tableName="ph_item_transaction">
+            <column name="transaction_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="store_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="batch_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="transaction_type_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_transaction_type_id"
+                                 baseTableName="ph_item_transaction" baseColumnNames="transaction_type_id"
+                                 referencedTableName="ph_item_transaction_type" referencedColumnNames="transaction_type_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_price_category_id"
+                                 baseTableName="ph_item_transaction" baseColumnNames="price_category_id"
+                                 referencedTableName="ph_item_price_category" referencedColumnNames="price_category_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_store_id"
+                                 baseTableName="ph_item_transaction" baseColumnNames="store_id"
+                                 referencedTableName="ph_store" referencedColumnNames="store_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_item_id"
+                                 baseTableName="ph_item_transaction" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_creator"
+                                 baseTableName="ph_item_transaction" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_transaction_changed_by"
+                                 baseTableName="ph_item_transaction" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+
+        <createIndex indexName="ind_ph_item_transaction_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_transaction">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_transaction_quantity"
+                     schemaName="openmrs"
+                     tableName="ph_item_transaction">
+            <column name="quantity" type="int"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_price" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_price" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record item prices for pharmacy items</comment>
+        <createTable tableName="ph_item_price">
+            <column name="item_price_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="selling_price" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="int" />
+            <column name="date_changed" type="datetime" />
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_price_item_id"
+                                 baseTableName="ph_item_price" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_price_price_category_id"
+                                 baseTableName="ph_item_price" baseColumnNames="price_category_id"
+                                 referencedTableName="ph_item_price_category" referencedColumnNames="price_category_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_price_creator"
+                                 baseTableName="ph_item_price" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_price_changed_by"
+                                 baseTableName="ph_item_price" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+
+        <createIndex indexName="ind_ph_item_price_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_price">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_price_selling_price"
+                     schemaName="openmrs"
+                     tableName="ph_item_price">
+            <column name="selling_price" type="int"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_request_status_code" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_request_status_code" />
+            </not>
+        </preConditions>
+        <comment>Creating table to define codes for item's status.</comment>
+        <createTable tableName="ph_item_request_status_code">
+            <column name="status_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(125)" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_state" type="varchar(125)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="destination_state" type="varchar(125)">
+                <constraints nullable="false" />
+            </column>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <createIndex indexName="ind_ph_item_request_status_code_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_request_status_code">
+            <column name="uuid" type="char"/>
+        </createIndex>
+
+        <sql>
+            insert into ph_item_request_status_code(name,destination_state,source_state,uuid) values('Sending to main store.','New','Waiting',uuid());
+        </sql>
+        <sql>
+            insert into ph_item_request_status_code(name,destination_state,source_state,uuid) values('Canceled by user before main store issued.','Cancelled by requester','I cancelled',uuid());
+        </sql>
+        <sql>
+            insert into ph_item_request_status_code(name,destination_state,source_state,uuid) values('Sending fulfilment to requester for acceptance.','Fulfilled','Waiting confirmation',uuid());
+        </sql>
+        <sql>
+            insert into ph_item_request_status_code(name,destination_state,source_state,uuid) values('Fulfilment done by issuer and requester confirmed to receive.','Fulfilled and confirmed','I confirmed',uuid());
+        </sql>
+        <sql>
+            insert into ph_item_request_status_code(name,destination_state,source_state,uuid) values('Sending confirmation as rejected to main store.','Rejected','I rejected',uuid());
+        </sql>
+        <sql>
+            insert into ph_item_request_status_code(name,destination_state,source_state,uuid) values('Sending rejection to requester.','I rejected','Rejected',uuid());
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_request" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_request" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record requests for items from different stores.</comment>
+        <createTable tableName="ph_item_request">
+            <column name="request_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="request_group_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requesting_store" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="requested_store" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_requested" type="int" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_issued" type="int" defaultValueNumeric="0">
+                <constraints nullable="true"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="status_code" type="int" />
+            <column name="issuer" type="int">
+                <constraints nullable="true"/>
+            </column>
+            <column name="date_issued" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_requesting_store"
+                                 baseTableName="ph_item_request" baseColumnNames="requesting_store"
+                                 referencedTableName="ph_store" referencedColumnNames="store_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_price_category_id"
+                                 baseTableName="ph_item_request" baseColumnNames="price_category_id"
+                                 referencedTableName="ph_item_price_category" referencedColumnNames="price_category_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_requested_store"
+                                 baseTableName="ph_item_request" baseColumnNames="requested_store"
+                                 referencedTableName="ph_store" referencedColumnNames="store_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_item_id"
+                                 baseTableName="ph_item_request" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_creator"
+                                 baseTableName="ph_item_request" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_issuer"
+                                 baseTableName="ph_item_request" baseColumnNames="issuer"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_status_code"
+                                 baseTableName="ph_item_request" baseColumnNames="status_code"
+                                 referencedTableName="ph_item_request_status_code" referencedColumnNames="status_id" />
+
+        <createIndex indexName="ind_ph_item_request_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_request">
+            <column name="uuid" type="char"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_request_quantity_requested"
+                     schemaName="openmrs"
+                     tableName="ph_item_request">
+            <column name="quantity_requested" type="int"/>
+        </createIndex>
+        <createIndex indexName="ind_ph_item_request_quantity_issued"
+                     schemaName="openmrs"
+                     tableName="ph_item_request">
+            <column name="quantity_issued" type="int"/>
+        </createIndex>
+        <sql endDelimiter="#" splitStatements="false">
+            create trigger after_ph_item_request_insert
+            after insert
+            on ph_item_request
+            for each row
+            begin
+                declare rows int;
+                SET rows=(select count(*) from ph_item_request_status_log pirsl where(pirsl.request_id=NEW.request_id));
+                if rows=0 then
+                    insert into ph_item_request_status_log(request_id,status_id,creator,date_created,uuid) values(NEW.request_id,NEW.status_code,NEW.creator,now(),uuid());
+                end if;
+            end;
+            #
+        </sql>
+        <sql endDelimiter="#" splitStatements="false">
+            create trigger after_ph_item_request_update
+            after update
+            on ph_item_request
+            for each row
+            begin
+                declare rows int;
+                SET rows=(select count(*) from ph_item_request_status_log pirsl where(pirsl.request_id=NEW.request_id));
+                if rows &gt; 0 then
+                    if OLD.status_code &lt;&gt; NEW.status_code then
+                        insert into ph_item_request_status_log(request_id,status_id,creator,date_created,uuid) values(NEW.request_id,NEW.status_code,NEW.creator,now(),uuid());
+                    end if;
+                end if;
+            end;
+            #
+        </sql>
+
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_request_status_log" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_request_status_log" />
+            </not>
+        </preConditions>
+        <comment>Creating table to log states for all requests.</comment>
+        <createTable tableName="ph_item_request_status_log">
+            <column name="log_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="request_id" type="int" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_status_log_request_id"
+                                 baseTableName="ph_item_request_status_log" baseColumnNames="request_id"
+                                 referencedTableName="ph_item_request" referencedColumnNames="request_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_status_log_creator"
+                                 baseTableName="ph_item_request_status_log" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_request_status_log_status_id"
+                                 baseTableName="ph_item_request_status_log" baseColumnNames="status_id"
+                                 referencedTableName="ph_item_request_status_code" referencedColumnNames="status_id" />
+        <createIndex indexName="ind_item_request_status_log_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_request_status_log">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_item_stock_outstanding" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_stock_outstanding" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record stock quantity not yet confirmed being received.</comment>
+        <createTable tableName="ph_item_stock_outstanding">
+            <column name="outstanding_stock_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="store_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="batch_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="request_id" type="int" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_outstanding_store_id"
+                                 baseTableName="ph_item_stock_outstanding" baseColumnNames="store_id"
+                                 referencedTableName="ph_store" referencedColumnNames="store_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_outstanding_item_id"
+                                 baseTableName="ph_item_stock_outstanding" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_outstanding_price_category_id"
+                                 baseTableName="ph_item_stock_outstanding" baseColumnNames="price_category_id"
+                                 referencedTableName="ph_item_price_category" referencedColumnNames="price_category_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_outstanding_creator"
+                                 baseTableName="ph_item_stock_outstanding" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_stock_outstanding_request_id"
+                                 baseTableName="ph_item_stock_outstanding" baseColumnNames="request_id"
+                                 referencedTableName="ph_item_request" referencedColumnNames="request_id" />
+
+        <createIndex indexName="ind_ph_item_stock_outstanding_quantity"
+                     schemaName="openmrs"
+                     tableName="ph_item_stock_outstanding">
+            <column name="quantity" type="char"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_location_store_map" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_location_store_map" />
+            </not>
+        </preConditions>
+        <comment>Creating table to map defined dispensing locations with their respective stores.</comment>
+        <createTable tableName="ph_location_store_map">
+            <column name="map_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="store_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0"/>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_location_store_map_location_id"
+                                 baseTableName="ph_location_store_map" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_location_store_map_store_id"
+                                 baseTableName="ph_location_store_map" baseColumnNames="store_id"
+                                 referencedTableName="ph_store" referencedColumnNames="store_id" />
+
+        <createIndex indexName="ind_ph_location_store_map_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_location_store_map">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+
+    <changeSet id="pharmacy_visit_payment_dispense_map" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_visit_payment_dispense_map" />
+            </not>
+        </preConditions>
+        <comment>Creating table to map visit types to the respective dispensing points where prescription shall be sent to.</comment>
+        <createTable tableName="ph_visit_payment_dispense_map">
+            <column name="map_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="visit_type_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="retired" type="smallint" defaultValueNumeric="0"/>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_visit_payment_dispense_map_visit_type_id"
+                                 baseTableName="ph_visit_payment_dispense_map" baseColumnNames="visit_type_id"
+                                 referencedTableName="visit_type" referencedColumnNames="visit_type_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_visit_payment_dispense_map_location_id"
+                                 baseTableName="ph_visit_payment_dispense_map" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_visit_payment_dispense_map_payment_category_id"
+                                 baseTableName="ph_visit_payment_dispense_map" baseColumnNames="payment_category_id"
+                                 referencedTableName="concept" referencedColumnNames="concept_id" />
+        <createIndex indexName="ind_ph_visit_payment_dispense_map_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_visit_payment_dispense_map">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="pharmacy_item_prescription_order" author="Eric Mwailunga" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ph_item_prescription_order" />
+            </not>
+        </preConditions>
+        <comment>Creating table to record prescription orders received and dispensed in dispensing points.</comment>
+        <createTable tableName="ph_item_prescription_order">
+            <column name="prescription_order_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="patient_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="visit_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_id" type="int" >
+                <constraints nullable="false"/>
+            </column>
+            <column name="item_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_category_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target_dispensing_point_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dispensed" type="int" defaultValueNumeric="0"/>
+            <column name="dispenser" type="int"/>
+            <column name="point_dispensed" type="int"/>
+            <column name="dispensed_date" type="datetime"/>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="datetime">
+                <constraints nullable="false" />
+            </column>
+            <column name="uuid" type="char(58)">
+                <constraints nullable="false" unique="true" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_patient_id"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="patient_id"
+                                 referencedTableName="patient" referencedColumnNames="patient_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_category_id"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="item_category_id"
+                                 referencedTableName="ph_item_category" referencedColumnNames="category_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_payment_category_id"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="payment_category_id"
+                                 referencedTableName="concept" referencedColumnNames="concept_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_visit_id"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="visit_id"
+                                 referencedTableName="visit" referencedColumnNames="visit_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_item_id"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="item_id"
+                                 referencedTableName="ph_item" referencedColumnNames="item_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_target_dispensing_point_id"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="target_dispensing_point_id"
+                                 referencedTableName="location" referencedColumnNames="location_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_dispenser"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="dispenser"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="fk_ph_item_prescription_order_point_dispensed"
+                                 baseTableName="ph_item_prescription_order" baseColumnNames="point_dispensed"
+                                 referencedTableName="location" referencedColumnNames="location_id" />
+        <createIndex indexName="ind_ph_item_prescription_order_uuid"
+                     schemaName="openmrs"
+                     tableName="ph_item_prescription_order">
+            <column name="uuid" type="char"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

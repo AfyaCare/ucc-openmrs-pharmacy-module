@@ -1,0 +1,16 @@
+GET https://192.168.1.135/openmrs/ws/rest/v1/pharmacy/test
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-10-03T120643.200.txt
+
+###
+
+GET https://192.168.1.135/openmrs/ws/rest/v1/main/test
+Accept: */*
+Cache-Control: no-cache
+
+<> 2019-10-03T120610.404.json
+
+###
+
